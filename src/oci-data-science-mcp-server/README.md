@@ -5,53 +5,61 @@
 This server provides tools to interact with the OCI Data Science resources.
 It includes tools to help with common tasks with OCI Data Science.
 
-## Running the server
+## Installing dependencies
+```sh
+
+# cd to path you cloned the oci-data-science-mcp-server
+cd /path/to/oci-data-science-mcp-server
+
+# Create a new venv
+uv venv .venv
+
+# sync dependencies
+uv sync
+```
+
+## Running the server manually
 
 ```sh
 uv run oracle.oci-data-science-mcp-server
 ```
 
+## Example MCP Config JSON
+```
+{
+  "mcpServers": {
+    "oracle-oci-data-science-mcp-server": {
+      "disabled": false,
+      "timeout": 60,
+      "type": "stdio",
+      "command": "uv",
+      "args": [
+        "run",
+        "oracle.oci-data-science-mcp-server"
+      ],
+      "env": {
+        "OCI_CONFIG_PROFILE": "DEFAULT",
+        "VIRTUAL_ENV": "/path/to/mcp/.venv",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      }
+    }
+  }
+}
+```
+
 ## Tools
 
-| Tool Name | Description |
-| --- | --- |
-| get_compartment_id | Get a list of Compartment OCID by Compartment name for use with other tools. |
-| project_count | Get count of OCI Data Science Projects |
-| create_project | Create new OCI Data Science Project with project name and description. |
-| model_count | Returns number of models saved to model catalog in OCI Data Science for a given compartment |
-| list_projects | returns a list of OCI Data Science Projects by Project Name, Project ID and Project Description as a dictionary |
-| create_notebook_session | Creates a managed Notebook Session on OCI Data Science in a given Project and Compartment. |
-| list_model_version_set_attributes | List attributes of a Model Version Set. |
-| list_model_version_sets | List all Model Version Sets in a compartment with their IDs and names. |
-| download_model_artefact | Download model artifact from the catalog. |
-| create_job_from_script | Create a job from a script. Currently only implemented to support service_conda runtimes. |
-| list_models | List models in the model catalog. |
-| list_jobs | List all jobs in a compartment with their IDs and names. |
-| job_details_by_id | List jobs information for a job based on its Job ID. |
-| list_pipelines | List all pipelines in a compartment with their IDs and names. |
-| pipelines_details_by_id | List pipeline details by Pipeline ID. |
-| start_job_run | Start a job run. |
-| start_pipeline_run | Start a pipeline run. Use list_pipelines to find the pipeline_id by name. give the run a meaningful name if possible. |
-| create_job_from_container_image | Create a job from a container image. |
-| delete_project | Delete an OCI Data Science Project. Find the Project ID by calling List Projects and finding the Project ID associated with a Project Name. |
-| activate_notebook_session | Activates a notebook session. Use list_notebook_sessions to find a notebook session id by name. |
-| delete_notebook_session | Delete a notebook session. |
-| stop_notebook_session | Stop (deactivate) a notebook session. |
-| delete_job | Delete a job. |
-| delete_pipeline | Delete a pipeline. |
-| deploy_model | Deploy a model from the catalog as a model deployment. Only works for Conda based runtimes currently. Assumes you have already saved the model to the model catalog separately |
-| activate_model_deployment | Activate an existing model deployment. |
-| deactivate_model_deployment | Deactivate (stop) a running model deployment. |
-| list_notebook_sessions | List all notebook sessions in a compartment with their IDs, names, and statuses. |
-| update_project | Update an existing project's details such as name or description. |
-| list_model_deployments | List all model deployments in a compartment with their IDs, names, and statuses. |
-| get_pipeline_run_status | Get the status and details of the most recent pipeline run for a given pipeline. This tool can be used to: - get the current status - get the started, accepted or finished date and time |
-| get_job_run_status | Get the status and details of the most recent job run for a given job. This tool can be used to: - get the current status - get the started, accepted or finished date and time |
-| list_job_runs | List all runs for a specific job, including their statuses and details. |
-| cancel_job_run | Cancel a currently running job run. |
-| list_pipeline_runs | List all runs for a specific pipeline, including statuses and details. |
-| delete_model_deployment | Delete a model deployment. |
-
+| Tool | Description |
+|------|-------------|
+| oci_ds_compartments | List OCI compartments in the tenancy (including sub-compartments). Use this tool when the user provides a compartment *name* and you need the compartment OCID. |
+| data_science_projects | Manage OCI Data Science Projects. Supports create, list, update, delete, and count. Use 'list' to discover project OCIDs. |
+| data_science_model_catalog | Manage the OCI Data Science Model Catalog. Supports listing models, counting, downloading model artifacts, and interacting with Model Version Sets. |
+| data_science_jobs | Manage OCI Data Science Jobs. Supports creating jobs from scripts or container images, listing jobs, retrieving details, updating, and deleting jobs. |
+| data_science_job_runs | Manage OCI Data Science Job Runs. Supports starting runs, listing runs, getting status, and cancelling runs. |
+| data_science_notebook_sessions | Manage OCI Data Science Notebook Sessions. Supports create, activate, stop, delete, and list. Notebook session URLs can be used to open the session in the OCI console. |
+| data_science_pipelines | Manage OCI Data Science Pipelines. Supports list, details, and delete. |
+| data_science_pipeline_runs | Manage OCI Data Science Pipeline Runs. Supports starting runs, listing runs, and retrieving status. |
+| data_science_model_deployments | Manage OCI Data Science Model Deployments. Supports deploy, list, activate, deactivate, and delete. Deploy uses ADS GenericModel.deploy for conda-based deployments. |
 
 ⚠️ **NOTE**: All actions are performed with the permissions of the configured OCI CLI profile. We advise least-privilege IAM setup, secure credential management, safe network practices, secure logging, and warn against exposing secrets.
 
